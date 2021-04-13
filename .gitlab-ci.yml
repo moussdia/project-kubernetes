@@ -8,6 +8,7 @@ variables:
 stages:
   - lint-helm-chart
   - release-helm-chart
+  - deploy-helm-chart
 
 
 lint-helm:
@@ -27,3 +28,32 @@ release-helm:
     - helm chart push $CI_REGISTRY/gitlabUser/production/symfony:$CI_COMMIT_TAG
   only:
     - tags
+
+
+
+#Lets now push all of these files to our gitlab repositories and publish a new tag to trigger a push to our registry:
+git commit -am "initial release"
+git tag v0.1.0
+git push && git push --tags
+
+
+#Pulling & Installing the Chart   Developpement
+deploy-dev:
+  stage: deploy-helm-chart
+  script:
+    - export HELM_EXPERIMENTAL_OCI=1
+    - helm chart pull registry.gitlab.com/gitlabUser/developpement/symfony:v0.1.0
+    - helm chart export registry.gitlab.com/gitlabUser/developpement/symfony:v0.1.0 -d  /tmp/
+    - helm upgrade --install demo /tmp/developpement/symfony
+
+ 
+#Pulling & Installing the Chart   Production
+deploy-prod:
+  stage: deploy-helm-chart
+  script:
+    - export HELM_EXPERIMENTAL_OCI=1
+    - helm chart pull registry.gitlab.com/gitlabUser/production/symfony:v0.1.0
+    - helm chart export registry.gitlab.com/gitlabUser/production/symfony:v0.1.0 -d  /tmp/
+    - helm upgrade --install demo /tmp/production/symfony
+
+
