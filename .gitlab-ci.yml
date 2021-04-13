@@ -13,14 +13,14 @@ stages:
 lint-helm:
   stage: lint-helm-chart
   script:
-    - helm lint alertmanager-bot
+    - helm lint symfony
 
 
 release-helm:
   stage: release-helm-chart
   script:
     - helm registry login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - helm chart save helloworld $CI_REGISTRY/gitlabUser/helloworld:$CI_COMMIT_TAG
-    - helm chart push $CI_REGISTRY/gitlabUser/helloworld:$CI_COMMIT_TAG
+    - helm chart save symfony $CI_REGISTRY/gitlabUser/symfony:$CI_COMMIT_TAG
+    - helm chart push $CI_REGISTRY/gitlabUser/symfony:$CI_COMMIT_TAG
   only:
     - tags
