@@ -13,14 +13,17 @@ stages:
 lint-helm:
   stage: lint-helm-chart
   script:
-    - helm lint symfony
+    - helm lint /developpement/symfony
+    - helm lint /production/symfony
 
 
 release-helm:
   stage: release-helm-chart
   script:
     - helm registry login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - helm chart save symfony $CI_REGISTRY/gitlabUser/symfony:$CI_COMMIT_TAG
-    - helm chart push $CI_REGISTRY/gitlabUser/symfony:$CI_COMMIT_TAG
+    - helm chart save /developpement/symfony $CI_REGISTRY/gitlabUser/developpement/symfony:$CI_COMMIT_TAG
+    - helm chart push $CI_REGISTRY/gitlabUser/developpement/symfony:$CI_COMMIT_TAG
+    - helm chart save /production/symfony $CI_REGISTRY/gitlabUser/production/symfony:$CI_COMMIT_TAG
+    - helm chart push $CI_REGISTRY/gitlabUser/production/symfony:$CI_COMMIT_TAG
   only:
     - tags
